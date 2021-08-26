@@ -40,6 +40,9 @@ ideia inicial do 2º commit
 	e tirar a stringConnect da startup para bootstrapper
 	mudar as view de musico onde estiver ViewBag.bandaId para Bandas ou de id para nome.
 
-3° Commit -
-	Criar
-	
+3° Commit - implementar o Search e OrderAscendant
+	Criar as IndexViewModels dentro do presentation para fazer a search e orderAscendant
+	mudar o metodo de Index dentro de controller para receber IndexViewModels
+	Mudar a view Index de Banda e Musico para receberem seus IndexViewModel.cs
+
+4° - 

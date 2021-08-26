@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Data.Data;
 using Domain.Model.Models;
 using Domain.Model.Interfaces.Services;
+using Asp.NetAT.Models;
 
 namespace Asp.NetAT.Controllers
 {
@@ -22,11 +23,17 @@ namespace Asp.NetAT.Controllers
 
         // GET: Banda
         //TODO: make to IndexViewModel
-        public async Task<IActionResult> Index()
-        {
-            var lista = await _bandaService.GetAllAsync(true, null);
+        public async Task<IActionResult> Index(BandaIndexViewModel bandaIndexRequest)
+        {   //sem usar o BandaIndexViewModel
+            /*var lista = await _bandaService.GetAllAsync(true, null);*/
 
-            return View(/*await _context.BandaModel.ToListAsync()*/ lista);
+            var bandaIndexViewModel = new BandaIndexViewModel
+            {
+                Search = bandaIndexRequest.Search,
+                OrderAscendant = bandaIndexRequest.OrderAscendant,
+                Bandas = await _bandaService.GetAllAsync(bandaIndexRequest.OrderAscendant, bandaIndexRequest.Search)
+            };
+            return View(bandaIndexViewModel);
         }
 
         // GET: Banda/Details/5

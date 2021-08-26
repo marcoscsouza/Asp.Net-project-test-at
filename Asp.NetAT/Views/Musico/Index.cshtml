@@ -1,53 +1,77 @@
-﻿@model IEnumerable<Domain.Model.Models.MusicoModel>
+﻿@model MusicoIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Lista de musicos</h1>
+<h3>Search</h3>
+<form asp-action="Index">
+    <label>Busca:</label>
+    <input type="text" asp-for="@Model.Search" />
+    <br />
+    <label>Ordenação por Nome:</label>
+    <select asp-for="OrderAscendant">
+        <option value="@true">Ascendente</option>
+        <option value="@false">Descendente</option>
+
+    </select>
+    <br />
+    <button class="btn btn-dark btn-group-lg">Buscar</button>
+</form>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@{
+    if (Model.Musicos == null || !Model.Musicos.Any())
+    {
+        <p>Nenhum musico cadastrado :(</p>
+        return;
+    }
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                @Html.DisplayNameFor(model => model.Musicos.First().Nome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SobreNome)
+                @Html.DisplayNameFor(model => model.Musicos.First().SobreNome)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nascimento)
+                @Html.DisplayNameFor(model => model.Musicos.First().Nascimento)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Banda)
+                @Html.DisplayNameFor(model => model.Musicos.First().Banda)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SobreNome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nascimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Banda.Nome)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Musicos)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SobreNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nascimento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Banda.Nome)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

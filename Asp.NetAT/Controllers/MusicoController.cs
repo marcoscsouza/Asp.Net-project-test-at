@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Data.Data;
 using Domain.Model.Models;
 using Domain.Model.Interfaces.Services;
+using Asp.NetAT.Models;
 
 namespace Asp.NetAT.Controllers
 {
@@ -26,15 +27,24 @@ namespace Asp.NetAT.Controllers
         }
 
         // GET: Musico
-        public async Task<IActionResult> Index(MusicoModel musicoModel)
-        {
-            var lista = await _musicoService.GetAllAsync(true, null);
-
-            await PreencherSelectBandas(musicoModel.BandaId);
-
+        public async Task<IActionResult> Index(MusicoIndexViewModel musicoIndexRequest)
+        {   //sem usar o musicoIndexViewModel
+            /*var lista = await _musicoService.GetAllAsync(true, null);*/
+            
             /*var aspNetATContext = _context.MusicoModel.Include(m => m.Banda);*/
 
-            return View(/*await aspNetATContext.ToListAsync()*/ lista);
+            var musicoIndexViewModel = new MusicoIndexViewModel
+            {
+                Search = musicoIndexRequest.Search,
+                OrderAscendant = musicoIndexRequest.OrderAscendant,
+                Musicos = await _musicoService.GetAllAsync(
+                    musicoIndexRequest.OrderAscendant,
+                    musicoIndexRequest.Search)
+            };
+
+            await PreencherSelectBandas();
+
+            return View(musicoIndexViewModel);
         }
 
         // GET: Musico/Details/5
