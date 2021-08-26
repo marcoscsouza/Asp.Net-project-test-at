@@ -22,7 +22,7 @@ namespace Asp.NetAT.Controllers
         }
 
         // GET: Banda
-        //TODO: make to IndexViewModel
+        
         public async Task<IActionResult> Index(BandaIndexViewModel bandaIndexRequest)
         {   //sem usar o BandaIndexViewModel
             /*var lista = await _bandaService.GetAllAsync(true, null);*/
@@ -171,6 +171,14 @@ namespace Asp.NetAT.Controllers
 
             var any = banda != null;
             return any;
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public async Task<IActionResult> IsNomeValid(string nome, int id)
+        {
+            return await _bandaService.IsNomeValidAsync(nome, id)
+                ? Json(true)
+                : Json($"Nome {nome} já está sendo usado.");
         }
     }
 }

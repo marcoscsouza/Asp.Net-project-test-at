@@ -42,10 +42,12 @@ namespace Domain.Service.Services
             return await _bandaRepository.GetByIdAsync(id);
         }
 
-        //TODO: depois do teste para realizar 2º commit
-        public Task<bool> IsNomeValidAsync(string nome, int id)
+        //usado no remote
+        public async Task<bool> IsNomeValidAsync(string nome, int id)
         {
-            throw new NotImplementedException();
+            var bandaModel = await _bandaRepository.GetNomeNotFromThisIdAsync(nome, id);
+
+            return bandaModel == null;
         }
     }
 }

@@ -75,7 +75,11 @@ namespace Data.Repositories
         //TODO: Fazer depois de realizar o teste do 2º commit
         public async Task<BandaModel> GetNomeNotFromThisIdAsync(string nome, int id)
         {
-            throw new NotImplementedException();
+            var bandaModel = await _aspNetATContext
+                .BandaModel
+                .FirstOrDefaultAsync(x => x.Nome == nome && x.Id != id);
+
+            return bandaModel;
         }
     }
 }

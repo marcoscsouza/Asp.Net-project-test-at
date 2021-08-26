@@ -58,3 +58,12 @@ ideia inicial do 2º commit
 	Fazer as mudanças em todas as views menos no Index que tem seu proprio
 	Modificar o controller para fazer as converções dos Models usando From e dos ViewModels usando ToModel()
 
+5° Commit - Validações básicas e Remote
+	Validações basicas basta alterar coloca-las no viewModel que já será usadas
+	Remote
+		usara uma action para servir de metodo e será direcionada na controller da banda
+		o AdditionalFields serve para comparar pelo Id e evitar erros de comparação
+		remote acessa diretamente o banco então precisa ser feita a ponte
+			o ViewModel => Controller => IService(Service) => IRepository(Repository) => Context
+
+### Assim conclui o necessario para o TP1 (Vai até a aula 6)
