@@ -13,15 +13,14 @@ namespace Asp.NetAT.Controllers
 {
     public class MusicoController : Controller
     {
-        private readonly AspNetATContext _context;
+        
         private readonly IMusicoService _musicoService;
         private readonly IBandaService _bandaService;
 
-        public MusicoController(AspNetATContext context,
-                                IMusicoService musicoService, 
+        public MusicoController(IMusicoService musicoService, 
                                 IBandaService bandaService)
         {
-            _context = context;
+            
             _musicoService = musicoService;
             _bandaService = bandaService;
         }

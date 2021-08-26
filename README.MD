@@ -25,11 +25,12 @@ dotnet ef database update --startup-project ..\Asp.NetAT\Asp.NetAT.csproj
 	e depois feita a migração do Context para a pasta Data dentro do projeto Data 
 	e por ultimo feita a migrations add e update.
 
-Como é o acesso quando criado:
-	A controller acessar diretamente o Context e faz os comandos
-Como tem que ficar:
-	A controller vai acessar o Service, que vai acessar o Repository, que só então vai fazer as operações no Context.
-	(sempre abstraindo por meio das Interfaces)
+ideia inicial do 2º commit
+	Como é o acesso quando criado:
+		A controller acessar diretamente o Context e faz os comandos
+	Como tem que ficar:
+		A controller vai acessar o Service, que vai acessar o Repository, que só então vai fazer as operações no Context.
+		(sempre abstraindo por meio das Interfaces)
 
 2° Commit - migração para o modelo e infra para o DDD
 	Criar as interfaces dentro do Domain.Model para repository e service dos models. ex: IBandaRepository e IServiceRepository
@@ -39,5 +40,6 @@ Como tem que ficar:
 	e tirar a stringConnect da startup para bootstrapper
 	mudar as view de musico onde estiver ViewBag.bandaId para Bandas ou de id para nome.
 
-
+3° Commit -
+	Criar
 	
