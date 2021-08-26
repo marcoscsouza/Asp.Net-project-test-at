@@ -51,7 +51,9 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            return View(bandaModel);
+            var bandaViewModel = BandaViewModel.From(bandaModel);
+
+            return View(bandaViewModel);
         }
 
         // GET: Banda/Create
@@ -65,12 +67,14 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(/*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaModel bandaModel)
+        public async Task<IActionResult> Create(/*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaViewModel bandaViewModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(bandaModel);
+                return View(bandaViewModel);
             }
+
+            var bandaModel = bandaViewModel.ToModel();
 
             var criarBanda = await _bandaService.CreateAsync(bandaModel);
             
@@ -90,7 +94,9 @@ namespace Asp.NetAT.Controllers
             {
                 return NotFound();
             }
-            return View(bandaModel);
+
+            var bandaViewModel = BandaViewModel.From(bandaModel);
+            return View(bandaViewModel);
         }
 
         // POST: Banda/Edit/5
@@ -98,18 +104,19 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaModel bandaModel)
+        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaViewModel bandaViewModel)
         {
-            if (id != bandaModel.Id)
+            if (id != bandaViewModel.Id)
             {
                 return NotFound();
             }
 
             if (!ModelState.IsValid)
             {
-                return View(bandaModel);
+                return View(bandaViewModel);
             }
 
+            var bandaModel = bandaViewModel.ToModel();
             try
             {
                 await _bandaService.EditAsync(bandaModel);
@@ -143,7 +150,9 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            return View(bandaModel);
+            var bandaViewModel = BandaViewModel.From(bandaModel);
+
+            return View(bandaViewModel);
         }
 
         // POST: Banda/Delete/5

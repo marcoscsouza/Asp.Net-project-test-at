@@ -62,7 +62,9 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            return View(musicoModel);
+            var musicoViewModel = MusicoViewModel.From(musicoModel);
+
+            return View(musicoViewModel);
         }
 
         // GET: Musico/Create
@@ -78,14 +80,16 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(/*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoModel musicoModel)
+        public async Task<IActionResult> Create(/*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoViewModel musicoViewModel)
         {
             if (!ModelState.IsValid)
             {
-                await PreencherSelectBandas(musicoModel.BandaId);
+                await PreencherSelectBandas(musicoViewModel.BandaId);
 
-                return View(musicoModel);
+                return View(musicoViewModel);
             }
+
+            var musicoModel = musicoViewModel.ToModel();
 
             var bandaCriada = await _musicoService.CreateAsync(musicoModel);
             
@@ -108,7 +112,9 @@ namespace Asp.NetAT.Controllers
             /*ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoModel.BandaId);*/
             await PreencherSelectBandas(musicoModel.BandaId);
 
-            return View(musicoModel);
+            var musicoViewModel = MusicoViewModel.From(musicoModel);
+
+            return View(musicoViewModel);
         }
 
         // POST: Musico/Edit/5
@@ -116,19 +122,20 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoModel musicoModel)
+        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoViewModel musicoViewModel)
         {
-            if (id != musicoModel.Id)
+            if (id != musicoViewModel.Id)
             {
                 return NotFound();
             }
 
             if (!ModelState.IsValid)
             {
-                await PreencherSelectBandas(musicoModel.BandaId);
-                return View(musicoModel);
+                await PreencherSelectBandas(musicoViewModel.BandaId);
+                return View(musicoViewModel);
             }
 
+            var musicoModel = musicoViewModel.ToModel();
             try
             {
                 await _musicoService.EditAsync(musicoModel);
@@ -162,7 +169,8 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            return View(musicoModel);
+            var musicoViewModel = MusicoViewModel.From(musicoModel);
+            return View(musicoViewModel);
         }
 
         // POST: Musico/Delete/5

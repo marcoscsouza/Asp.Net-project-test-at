@@ -45,4 +45,16 @@ ideia inicial do 2º commit
 	mudar o metodo de Index dentro de controller para receber IndexViewModels
 	Mudar a view Index de Banda e Musico para receberem seus IndexViewModel.cs
 
-4° - 
+4° Commit - Migração dos Models para ViewModels
+	Criar as ViewModel para as duas entidades dentro de presentation
+	Atentar para propety que herda o model para herdar agora o ViewModel nas duas entidades
+	Atentar para a referencia ciclica que pode ocasionar em erros no arquivo Json
+
+		copiar todas as proprerties para o viewModel e criar 2 metodos
+		metodo FROM() : sempre recebe a classe, ela pega o model e transforma em viewModel
+			Usado no GET: para pegar o model que fica salvo no banco
+		metodo ToModel() : sempre recebe a variravel, ele pega a viewModel e converte em model
+			Usado no POST: para pegar a viewModel que o usuario transformou e salvar no banco novamente como Model
+	Fazer as mudanças em todas as views menos no Index que tem seu proprio
+	Modificar o controller para fazer as converções dos Models usando From e dos ViewModels usando ToModel()
+
