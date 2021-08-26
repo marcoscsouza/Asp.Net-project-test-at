@@ -14,6 +14,8 @@ namespace Data.Data
         {
         }
 
+
+        //TODO: mudar os nomes para funcionar conforme a convenção ao inves de BandaModel ser Bandas e etc
         public DbSet<Domain.Model.Models.BandaModel> BandaModel { get; set; }
 
         public DbSet<Domain.Model.Models.MusicoModel> MusicoModel { get; set; }

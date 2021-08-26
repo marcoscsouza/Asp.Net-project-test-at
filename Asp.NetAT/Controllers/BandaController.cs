@@ -7,22 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Data;
 using Domain.Model.Models;
+using Domain.Model.Interfaces.Services;
 
 namespace Asp.NetAT.Controllers
 {
     public class BandaController : Controller
     {
-        private readonly AspNetATContext _context;
+        private readonly IBandaService _bandaService;
 
-        public BandaController(AspNetATContext context)
+        public BandaController(IBandaService bandaService)
         {
-            _context = context;
+            _bandaService = bandaService;
         }
 
         // GET: Banda
+        //TODO: make to IndexViewModel
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BandaModel.ToListAsync());
+            var lista = await _bandaService.GetAllAsync(true, null);
+
+            return View(/*await _context.BandaModel.ToListAsync()*/ lista);
         }
 
         // GET: Banda/Details/5
@@ -33,8 +37,8 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var bandaModel = await _context.BandaModel
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var bandaModel = await _bandaService.GetByIdAsync(id.Value);
+
             if (bandaModel == null)
             {
                 return NotFound();
@@ -54,15 +58,16 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")] BandaModel bandaModel)
+        public async Task<IActionResult> Create(/*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaModel bandaModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(bandaModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(bandaModel);
             }
-            return View(bandaModel);
+
+            var criarBanda = await _bandaService.CreateAsync(bandaModel);
+            
+            return RedirectToAction(nameof(Details), new { id = criarBanda.Id });
         }
 
         // GET: Banda/Edit/5
@@ -73,7 +78,7 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var bandaModel = await _context.BandaModel.FindAsync(id);
+            var bandaModel = await _bandaService.GetByIdAsync(id.Value);
             if (bandaModel == null)
             {
                 return NotFound();
@@ -86,34 +91,34 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")] BandaModel bandaModel)
+        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaModel bandaModel)
         {
             if (id != bandaModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(bandaModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BandaModelExists(bandaModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(bandaModel);
             }
-            return View(bandaModel);
+
+            try
+            {
+                await _bandaService.EditAsync(bandaModel);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!( await BandaModelExistsAsync(bandaModel.Id)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Details), new { id = bandaModel.Id });
         }
 
         // GET: Banda/Delete/5
@@ -124,8 +129,8 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var bandaModel = await _context.BandaModel
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var bandaModel = await _bandaService.GetByIdAsync(id.Value);
+
             if (bandaModel == null)
             {
                 return NotFound();
@@ -139,15 +144,17 @@ namespace Asp.NetAT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bandaModel = await _context.BandaModel.FindAsync(id);
-            _context.BandaModel.Remove(bandaModel);
-            await _context.SaveChangesAsync();
+            await _bandaService.DeleteAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BandaModelExists(int id)
+        private async Task<bool> BandaModelExistsAsync(int id)
         {
-            return _context.BandaModel.Any(e => e.Id == id);
+            var banda = await _bandaService.GetByIdAsync(id);
+
+            var any = banda != null;
+            return any;
         }
     }
 }

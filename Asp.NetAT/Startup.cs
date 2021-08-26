@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Data.Data;
+using Crosscutting.IoC;
 
 namespace Asp.NetAT
 {
@@ -27,8 +28,9 @@ namespace Asp.NetAT
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<AspNetATContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("AspNetATContext")));
+            services.RegisterServices(Configuration);
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

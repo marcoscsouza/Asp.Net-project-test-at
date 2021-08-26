@@ -7,23 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Data.Data;
 using Domain.Model.Models;
+using Domain.Model.Interfaces.Services;
 
 namespace Asp.NetAT.Controllers
 {
     public class MusicoController : Controller
     {
         private readonly AspNetATContext _context;
+        private readonly IMusicoService _musicoService;
+        private readonly IBandaService _bandaService;
 
-        public MusicoController(AspNetATContext context)
+        public MusicoController(AspNetATContext context,
+                                IMusicoService musicoService, 
+                                IBandaService bandaService)
         {
             _context = context;
+            _musicoService = musicoService;
+            _bandaService = bandaService;
         }
 
         // GET: Musico
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(MusicoModel musicoModel)
         {
-            var aspNetATContext = _context.MusicoModel.Include(m => m.Banda);
-            return View(await aspNetATContext.ToListAsync());
+            var lista = await _musicoService.GetAllAsync(true, null);
+
+            await PreencherSelectBandas(musicoModel.BandaId);
+
+            /*var aspNetATContext = _context.MusicoModel.Include(m => m.Banda);*/
+
+            return View(/*await aspNetATContext.ToListAsync()*/ lista);
         }
 
         // GET: Musico/Details/5
@@ -34,9 +46,8 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var musicoModel = await _context.MusicoModel
-                .Include(m => m.Banda)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var musicoModel = await _musicoService.GetByIdAsync(id.Value);
+
             if (musicoModel == null)
             {
                 return NotFound();
@@ -46,9 +57,10 @@ namespace Asp.NetAT.Controllers
         }
 
         // GET: Musico/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
-            ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id");
+            await PreencherSelectBandas();
+
             return View();
         }
 
@@ -59,14 +71,16 @@ namespace Asp.NetAT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(/*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoModel musicoModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(musicoModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await PreencherSelectBandas(musicoModel.BandaId);
+
+                return View(musicoModel);
             }
-            ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoModel.BandaId);
-            return View(musicoModel);
+
+            var bandaCriada = await _musicoService.CreateAsync(musicoModel);
+            
+            return RedirectToAction(nameof(Details), new { id = bandaCriada.Id });
         }
 
         // GET: Musico/Edit/5
@@ -77,12 +91,14 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var musicoModel = await _context.MusicoModel.FindAsync(id);
+            var musicoModel = await _musicoService.GetByIdAsync(id.Value);
             if (musicoModel == null)
             {
                 return NotFound();
             }
-            ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoModel.BandaId);
+            /*ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoModel.BandaId);*/
+            await PreencherSelectBandas(musicoModel.BandaId);
+
             return View(musicoModel);
         }
 
@@ -98,28 +114,28 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(musicoModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MusicoModelExists(musicoModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await PreencherSelectBandas(musicoModel.BandaId);
+                return View(musicoModel);
             }
-            ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoModel.BandaId);
-            return View(musicoModel);
+
+            try
+            {
+                await _musicoService.EditAsync(musicoModel);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!(await MusicoModelExistsAsync(musicoModel.Id)))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Musico/Delete/5
@@ -130,9 +146,8 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var musicoModel = await _context.MusicoModel
-                .Include(m => m.Banda)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var musicoModel = await _musicoService.GetByIdAsync(id.Value);
+
             if (musicoModel == null)
             {
                 return NotFound();
@@ -146,15 +161,29 @@ namespace Asp.NetAT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var musicoModel = await _context.MusicoModel.FindAsync(id);
-            _context.MusicoModel.Remove(musicoModel);
-            await _context.SaveChangesAsync();
+            await _musicoService.DeleteAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MusicoModelExists(int id)
+
+        private async Task<bool> MusicoModelExistsAsync(int id)
         {
-            return _context.MusicoModel.Any(e => e.Id == id);
+            var banda = await _musicoService.GetByIdAsync(id);
+
+            var any = banda != null;
+
+            return any;
+        }
+
+        private async Task PreencherSelectBandas(int? bandaId = null)
+        {
+            var bandas = await _bandaService.GetAllAsync(true);
+
+            ViewBag.Bandas = new SelectList(bandas,
+                nameof(BandaModel.Id),
+                nameof(BandaModel.Nome),
+                bandaId);
         }
     }
 }
