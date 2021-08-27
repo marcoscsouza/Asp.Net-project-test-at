@@ -28,9 +28,21 @@ namespace Asp.NetAT
         {
             services.AddControllersWithViews();
 
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                
+                IConfigurationSection googleAuthNSection = Configuration.GetSection("Authentication:Google");
+
+                options.ClientId = googleAuthNSection["ClientId"];
+                options.ClientSecret = googleAuthNSection["ClientSecret"];
+                /*
+                options.ClientId = "33517397278-h4kfl9q21ep434kko39llprl7aci0g41.apps.googleusercontent.com";
+                options.ClientSecret = "pb9Opcx62nD3t81jXh5StW5v";
+                */
+            });
+
             services.RegisterServices(Configuration);
 
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

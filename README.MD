@@ -70,7 +70,7 @@ ideia inicial do 2º commit
 
 aulas 7 e 8 sobre identity
 
-6° Commit  - 
+6° Commit  - Identity
 	Fazer um scaffolding padrão de identity na camada de presentation só do login por enquanto...
 		as paginas que escolhemos gerar servem para personalizar as paginas
 	fazer as adaptações nos codigos para funcionar o identity
@@ -90,4 +90,20 @@ obs: não foi declarado o startup-project nem o project por teste mesmo, ocorreu 
 
 ## Assim conclui o necessario para o TP2 (aulas 7 e 8) bastava incluir o identity
 
+7° Commit -	User secrets e Login pelo GOOGLE
+	seguir o passo a passo dessa doc: https://www.notion.so/Aula-07-e-08-9d9ed3566c874057aee8c646a5ddf230#f120519f85464d448e3e1b832cfc29b3
+	My Client-Id
+		33517397278-h4kfl9q21ep434kko39llprl7aci0g41.apps.googleusercontent.com
+	My Client-secret
+		pb9Opcx62nD3t81jXh5StW5v
 
+	usando User Secrets no CLI
+	```powershell
+	dotnet user-secrets init
+	dotnet user-secrets set "Authentication:Google:ClientId" "<client-id>"
+	dotnet user-secrets set "Authentication:Google:ClientId" "33517397278-h4kfl9q21ep434kko39llprl7aci0g41.apps.googleusercontent.com"
+	dotnet user-secrets set "Authentication:Google:ClientSecret" "<client-secret>"	
+	dotnet user-secrets set "Authentication:Google:ClientSecret" "pb9Opcx62nD3t81jXh5StW5v"
+	```
+	definidos os secrets agora neste pc esta habilitado para usar
+	modificar a startup.cs para aceitar elas
