@@ -67,3 +67,27 @@ ideia inicial do 2º commit
 			o ViewModel => Controller => IService(Service) => IRepository(Repository) => Context
 
 ### Assim conclui o necessario para o TP1 (Vai até a aula 6)
+
+aulas 7 e 8 sobre identity
+
+6° Commit  - 
+	Fazer um scaffolding padrão de identity na camada de presentation só do login por enquanto...
+		as paginas que escolhemos gerar servem para personalizar as paginas
+	fazer as adaptações nos codigos para funcionar o identity
+	Fazer o migrations para ter acesso a um banco de dados
+
+	
+## Migrations do Identity dentro do presentation
+Add 
+```powershell
+dotnet ef migrations add AddInitIdentityMigration --context IdentityContext --output-dir Areas\Identity\Data\Migrations
+```
+Update
+```powershell
+dotnet ef database update --context IdentityContext
+```
+obs: não foi declarado o startup-project nem o project por teste mesmo, ocorreu alguns erros dificeis de identificar
+
+## Assim conclui o necessario para o TP2 (aulas 7 e 8) bastava incluir o identity
+
+

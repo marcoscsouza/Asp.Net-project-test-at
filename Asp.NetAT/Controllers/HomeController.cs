@@ -1,4 +1,5 @@
 ﻿using Asp.NetAT.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,7 +23,7 @@ namespace Asp.NetAT.Controllers
         {
             return View();
         }
-
+        [Authorize]  //Identity
         public IActionResult Privacy()
         {
             return View();

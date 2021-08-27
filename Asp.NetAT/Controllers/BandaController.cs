@@ -9,9 +9,11 @@ using Data.Data;
 using Domain.Model.Models;
 using Domain.Model.Interfaces.Services;
 using Asp.NetAT.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Asp.NetAT.Controllers
 {
+    [Authorize] //Identity
     public class BandaController : Controller
     {
         private readonly IBandaService _bandaService;

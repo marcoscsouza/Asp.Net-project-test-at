@@ -51,6 +51,7 @@ namespace Asp.NetAT
 
             app.UseRouting();
 
+            app.UseAuthentication();  //Identity
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -58,6 +59,7 @@ namespace Asp.NetAT
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();  //Identity
             });
         }
     }
