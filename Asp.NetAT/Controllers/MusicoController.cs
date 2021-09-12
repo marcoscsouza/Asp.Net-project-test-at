@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Data.Data;
-using Domain.Model.Models;
-using Domain.Model.Interfaces.Services;
 using Asp.NetAT.Models;
 using Microsoft.AspNetCore.Authorization;
+using Asp.NetAT.Services;
 
 namespace Asp.NetAT.Controllers
 {
@@ -17,29 +15,29 @@ namespace Asp.NetAT.Controllers
     public class MusicoController : Controller
     {
         
-        private readonly IMusicoService _musicoService;
-        private readonly IBandaService _bandaService;
+        private readonly IMusicoHttpService _musicoHttpService;
+        private readonly IBandaHttpService _bandaHttpService;
 
-        public MusicoController(IMusicoService musicoService, 
-                                IBandaService bandaService)
+        public MusicoController(IMusicoHttpService musicoHttpService, 
+                                IBandaHttpService bandaHttpService)
         {
             
-            _musicoService = musicoService;
-            _bandaService = bandaService;
+            _musicoHttpService = musicoHttpService;
+            _bandaHttpService = bandaHttpService;
         }
 
         // GET: Musico
         public async Task<IActionResult> Index(MusicoIndexViewModel musicoIndexRequest)
         {   //sem usar o musicoIndexViewModel
-            /*var lista = await _musicoService.GetAllAsync(true, null);*/
+            /*var lista = await _musicoHttpService.GetAllAsync(true, null);*/
             
-            /*var aspNetATContext = _context.MusicoModel.Include(m => m.Banda);*/
+            /*var aspNetATContext = _context.MusicoViewModel.Include(m => m.Banda);*/
 
             var musicoIndexViewModel = new MusicoIndexViewModel
             {
                 Search = musicoIndexRequest.Search,
                 OrderAscendant = musicoIndexRequest.OrderAscendant,
-                Musicos = await _musicoService.GetAllAsync(
+                Musicos = await _musicoHttpService.GetAllAsync(
                     musicoIndexRequest.OrderAscendant,
                     musicoIndexRequest.Search)
             };
@@ -57,14 +55,13 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var musicoModel = await _musicoService.GetByIdAsync(id.Value);
+            var musicoViewModel = await _musicoHttpService.GetByIdAsync(id.Value);
 
-            if (musicoModel == null)
+            if (musicoViewModel == null)
             {
                 return NotFound();
             }
 
-            var musicoViewModel = MusicoViewModel.From(musicoModel);
 
             return View(musicoViewModel);
         }
@@ -91,9 +88,8 @@ namespace Asp.NetAT.Controllers
                 return View(musicoViewModel);
             }
 
-            var musicoModel = musicoViewModel.ToModel();
 
-            var bandaCriada = await _musicoService.CreateAsync(musicoModel);
+            var bandaCriada = await _musicoHttpService.CreateAsync(musicoViewModel);
             
             return RedirectToAction(nameof(Details), new { id = bandaCriada.Id });
         }
@@ -106,15 +102,14 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var musicoModel = await _musicoService.GetByIdAsync(id.Value);
-            if (musicoModel == null)
+            var musicoViewModel = await _musicoHttpService.GetByIdAsync(id.Value);
+            if (musicoViewModel == null)
             {
                 return NotFound();
             }
-            /*ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoModel.BandaId);*/
-            await PreencherSelectBandas(musicoModel.BandaId);
+            /*ViewData["BandaId"] = new SelectList(_context.BandaModel, "Id", "Id", musicoViewModel.BandaId);*/
+            await PreencherSelectBandas(musicoViewModel.BandaId);
 
-            var musicoViewModel = MusicoViewModel.From(musicoModel);
 
             return View(musicoViewModel);
         }
@@ -137,14 +132,13 @@ namespace Asp.NetAT.Controllers
                 return View(musicoViewModel);
             }
 
-            var musicoModel = musicoViewModel.ToModel();
             try
             {
-                await _musicoService.EditAsync(musicoModel);
+                await _musicoHttpService.EditAsync(musicoViewModel);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!(await MusicoModelExistsAsync(musicoModel.Id)))
+                if (!(await MusicoViewModelExistsAsync(musicoViewModel.Id)))
                 {
                     return NotFound();
                 }
@@ -164,14 +158,13 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var musicoModel = await _musicoService.GetByIdAsync(id.Value);
+            var musicoViewModel = await _musicoHttpService.GetByIdAsync(id.Value);
 
-            if (musicoModel == null)
+            if (musicoViewModel == null)
             {
                 return NotFound();
             }
 
-            var musicoViewModel = MusicoViewModel.From(musicoModel);
             return View(musicoViewModel);
         }
 
@@ -180,15 +173,15 @@ namespace Asp.NetAT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _musicoService.DeleteAsync(id);
+            await _musicoHttpService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
 
 
-        private async Task<bool> MusicoModelExistsAsync(int id)
+        private async Task<bool> MusicoViewModelExistsAsync(int id)
         {
-            var banda = await _musicoService.GetByIdAsync(id);
+            var banda = await _musicoHttpService.GetByIdAsync(id);
 
             var any = banda != null;
 
@@ -197,11 +190,11 @@ namespace Asp.NetAT.Controllers
 
         private async Task PreencherSelectBandas(int? bandaId = null)
         {
-            var bandas = await _bandaService.GetAllAsync(true);
+            var bandas = await _bandaHttpService.GetAllAsync(true);
 
             ViewBag.Bandas = new SelectList(bandas,
-                nameof(BandaModel.Id),
-                nameof(BandaModel.Nome),
+                nameof(BandaViewModel.Id),
+                nameof(BandaViewModel.Nome),
                 bandaId);
         }
     }

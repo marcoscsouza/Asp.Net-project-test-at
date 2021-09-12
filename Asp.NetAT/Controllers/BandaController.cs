@@ -5,22 +5,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Data.Data;
-using Domain.Model.Models;
-using Domain.Model.Interfaces.Services;
 using Asp.NetAT.Models;
 using Microsoft.AspNetCore.Authorization;
+using Asp.NetAT.Services;
 
 namespace Asp.NetAT.Controllers
 {
     [Authorize] //Identity
     public class BandaController : Controller
     {
-        private readonly IBandaService _bandaService;
+        private readonly IBandaHttpService _bandaHttpService;
 
-        public BandaController(IBandaService bandaService)
+
+        public BandaController(IBandaHttpService bandaHttpService)
         {
-            _bandaService = bandaService;
+            _bandaHttpService = bandaHttpService;
         }
 
         // GET: Banda
@@ -33,7 +32,7 @@ namespace Asp.NetAT.Controllers
             {
                 Search = bandaIndexRequest.Search,
                 OrderAscendant = bandaIndexRequest.OrderAscendant,
-                Bandas = await _bandaService.GetAllAsync(bandaIndexRequest.OrderAscendant, bandaIndexRequest.Search)
+                Bandas = await _bandaHttpService.GetAllAsync(bandaIndexRequest.OrderAscendant, bandaIndexRequest.Search)
             };
             return View(bandaIndexViewModel);
         }
@@ -46,14 +45,13 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var bandaModel = await _bandaService.GetByIdAsync(id.Value);
+            var bandaViewModel = await _bandaHttpService.GetByIdAsync(id.Value);
 
-            if (bandaModel == null)
+            if (bandaViewModel == null)
             {
                 return NotFound();
             }
 
-            var bandaViewModel = BandaViewModel.From(bandaModel);
 
             return View(bandaViewModel);
         }
@@ -69,16 +67,15 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(/*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaViewModel bandaViewModel)
+        public async Task<IActionResult> Create( BandaViewModel bandaViewModel)
         {
             if (!ModelState.IsValid)
             {
                 return View(bandaViewModel);
             }
 
-            var bandaModel = bandaViewModel.ToModel();
 
-            var criarBanda = await _bandaService.CreateAsync(bandaModel);
+            var criarBanda = await _bandaHttpService.CreateAsync(bandaViewModel);
             
             return RedirectToAction(nameof(Details), new { id = criarBanda.Id });
         }
@@ -91,13 +88,12 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var bandaModel = await _bandaService.GetByIdAsync(id.Value);
-            if (bandaModel == null)
+            var bandaViewModel = await _bandaHttpService.GetByIdAsync(id.Value);
+            if (bandaViewModel == null)
             {
                 return NotFound();
             }
 
-            var bandaViewModel = BandaViewModel.From(bandaModel);
             return View(bandaViewModel);
         }
 
@@ -106,7 +102,7 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,InicioBanda,GeneroMusical,Nacionalidade,FazendoShow")]*/ BandaViewModel bandaViewModel)
+        public async Task<IActionResult> Edit(int id, BandaViewModel bandaViewModel)
         {
             if (id != bandaViewModel.Id)
             {
@@ -118,14 +114,13 @@ namespace Asp.NetAT.Controllers
                 return View(bandaViewModel);
             }
 
-            var bandaModel = bandaViewModel.ToModel();
             try
             {
-                await _bandaService.EditAsync(bandaModel);
+                await _bandaHttpService.EditAsync(bandaViewModel);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!( await BandaModelExistsAsync(bandaModel.Id)))
+                if (!( await BandaModelExistsAsync(bandaViewModel.Id)))
                 {
                     return NotFound();
                 }
@@ -134,7 +129,7 @@ namespace Asp.NetAT.Controllers
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Details), new { id = bandaModel.Id });
+            return RedirectToAction(nameof(Details), new { id = bandaViewModel.Id });
         }
 
         // GET: Banda/Delete/5
@@ -145,14 +140,13 @@ namespace Asp.NetAT.Controllers
                 return NotFound();
             }
 
-            var bandaModel = await _bandaService.GetByIdAsync(id.Value);
+            var bandaViewModel = await _bandaHttpService.GetByIdAsync(id.Value);
 
-            if (bandaModel == null)
+            if (bandaViewModel == null)
             {
                 return NotFound();
             }
 
-            var bandaViewModel = BandaViewModel.From(bandaModel);
 
             return View(bandaViewModel);
         }
@@ -162,14 +156,14 @@ namespace Asp.NetAT.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _bandaService.DeleteAsync(id);
+            await _bandaHttpService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> BandaModelExistsAsync(int id)
         {
-            var banda = await _bandaService.GetByIdAsync(id);
+            var banda = await _bandaHttpService.GetByIdAsync(id);
 
             var any = banda != null;
             return any;
@@ -178,7 +172,7 @@ namespace Asp.NetAT.Controllers
         [AcceptVerbs("GET", "POST")]
         public async Task<IActionResult> IsNomeValid(string nome, int id)
         {
-            return await _bandaService.IsNomeValidAsync(nome, id)
+            return await _bandaHttpService.IsNomeValidAsync(nome, id)
                 ? Json(true)
                 : Json($"Nome {nome} já está sendo usado.");
         }

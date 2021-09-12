@@ -1,5 +1,4 @@
-﻿using Domain.Model.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,39 +29,39 @@ namespace Asp.NetAT.Models
         public List<MusicoViewModel> Musicos { get; set; }
 
 
-        public static BandaViewModel From(BandaModel bandaModel)
-        {       //cuidar com a referencia ciclica!
-            var bandaViewModel = new BandaViewModel
-            {
-                Id = bandaModel.Id,
-                Nome = bandaModel.Nome,
-                InicioBanda = bandaModel.InicioBanda,
-                GeneroMusical = bandaModel.GeneroMusical,
-                Nacionalidade = bandaModel.Nacionalidade,
-                FazendoShow = bandaModel.FazendoShow,
+        //public static BandaViewModel From(BandaModel bandaModel)
+        //{       //cuidar com a referencia ciclica!
+        //    var bandaViewModel = new BandaViewModel
+        //    {
+        //        Id = bandaModel.Id,
+        //        Nome = bandaModel.Nome,
+        //        InicioBanda = bandaModel.InicioBanda,
+        //        GeneroMusical = bandaModel.GeneroMusical,
+        //        Nacionalidade = bandaModel.Nacionalidade,
+        //        FazendoShow = bandaModel.FazendoShow,
 
-                //comentada a linha de baixo e colocada "?" ou break no bandaModel
-                Musicos = bandaModel?.Musicos.Select(x => MusicoViewModel.From(x, false)).ToList(),
-            };
+        //        //comentada a linha de baixo e colocada "?" ou break no bandaModel
+        //        Musicos = bandaModel?.Musicos.Select(x => MusicoViewModel.From(x, false)).ToList(),
+        //    };
 
-            return bandaViewModel;
-        }
-        public BandaModel ToModel()
-        {
-            var bandaModel = new BandaModel
-            {
-                Id = Id,
-                Nome = Nome,
-                InicioBanda = InicioBanda,
-                GeneroMusical = GeneroMusical,
-                Nacionalidade = Nacionalidade,
-                FazendoShow = FazendoShow,
+        //    return bandaViewModel;
+        //}
+        //public BandaModel ToModel()
+        //{
+        //    var bandaModel = new BandaModel
+        //    {
+        //        Id = Id,
+        //        Nome = Nome,
+        //        InicioBanda = InicioBanda,
+        //        GeneroMusical = GeneroMusical,
+        //        Nacionalidade = Nacionalidade,
+        //        FazendoShow = FazendoShow,
 
-                //comentada a linha de baixo e colocada "?" ou break no bandaModel
-                Musicos = Musicos?.Select(x => x.ToModel(false)).ToList(),
-            };
+        //        //comentada a linha de baixo e colocada "?" ou break no bandaModel
+        //        Musicos = Musicos?.Select(x => x.ToModel(false)).ToList(),
+        //    };
 
-            return bandaModel;
-        }
+        //    return bandaModel;
+        //}
     }
 }

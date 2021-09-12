@@ -1,5 +1,4 @@
-﻿using Domain.Model.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Asp.NetAT.Models
@@ -23,48 +22,48 @@ namespace Asp.NetAT.Models
         public BandaViewModel Banda { get; set; }
 
         // transforma modelo em lista estatica
-        public static MusicoViewModel From(MusicoModel musicoModel, bool firstMap = true)
-        {
+        //public static MusicoViewModel From(MusicoModel musicoModel, bool firstMap = true)
+        //{
 
-            var banda = firstMap    // para interromper recursão
-                ? BandaViewModel.From(musicoModel.Banda)
-                : null;
+        //    var banda = firstMap    // para interromper recursão
+        //        ? BandaViewModel.From(musicoModel.Banda)
+        //        : null;
 
-            var musicoViewModel = new MusicoViewModel
-            {
-                Id = musicoModel.Id,
-                Nome = musicoModel.Nome,
-                SobreNome = musicoModel.SobreNome,
-                Nascimento = musicoModel.Nascimento,
-                BandaId = musicoModel.BandaId,
+        //    var musicoViewModel = new MusicoViewModel
+        //    {
+        //        Id = musicoModel.Id,
+        //        Nome = musicoModel.Nome,
+        //        SobreNome = musicoModel.SobreNome,
+        //        Nascimento = musicoModel.Nascimento,
+        //        BandaId = musicoModel.BandaId,
 
-                Banda = banda,
-            };
+        //        Banda = banda,
+        //    };
 
-            return musicoViewModel;
-        }
+        //    return musicoViewModel;
+        //}
 
-        //tranforma lista para modelo
-        public MusicoModel ToModel(bool firstMap = true)
-        {
+        ////tranforma lista para modelo
+        //public MusicoModel ToModel(bool firstMap = true)
+        //{
 
-            var banda = firstMap
-                ? Banda?.ToModel()
-                : null;
+        //    var banda = firstMap
+        //        ? Banda?.ToModel()
+        //        : null;
 
-            var musicoModel = new MusicoModel
-            {
-                Id = Id,
-                Nome = Nome,
-                SobreNome = SobreNome,
-                Nascimento = Nascimento,
-                BandaId = BandaId,
+        //    var musicoModel = new MusicoModel
+        //    {
+        //        Id = Id,
+        //        Nome = Nome,
+        //        SobreNome = SobreNome,
+        //        Nascimento = Nascimento,
+        //        BandaId = BandaId,
 
-                // colocado um break ou "?" depois de Banda para impedir o retorno de null
-                Banda = banda,
-            };
+        //        // colocado um break ou "?" depois de Banda para impedir o retorno de null
+        //        Banda = banda,
+        //    };
 
-            return musicoModel;
-        }
+        //    return musicoModel;
+        //}
     }
 }

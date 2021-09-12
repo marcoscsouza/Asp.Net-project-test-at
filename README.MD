@@ -107,3 +107,32 @@ obs: não foi declarado o startup-project nem o project por teste mesmo, ocorreu 
 	```
 	definidos os secrets agora neste pc esta habilitado para usar
 	modificar a startup.cs para aceitar elas
+
+8° Commit - começando o desacoplamento da aula 10
+	removida as referencias do MVC
+	removido as converções de ToModel e From
+	IndexViewModel recebendo diretamente o ViewModel e não mais Model
+	criado os Services e suas implementações e coloca-las nas controllers para substituir todos os metodos feitos antes 
+	corrigir a dependencia do startup
+	dica: a ideia principal ate o momento é fazer o MVC funcionar sem usar as outras camadas com o fake
+	criar a webApi e colocar as referencias que estavam no MVC e as connectionString do appSettings.json
+	consertar os migrations para receberem na webApi
+	Criar as ApiController para servir de endPoints dos controllers do MVC
+	gerar os verbos http para seguir o padrão restful
+	criar os parametros para o apiController
+	basicamente o ApiController vai fazer tudo que o Controller do MVC ja fazia 
+	até a aula 10 a BandaApiController ja funciona porem sem muita ligação com o MVC
+
+
+
+	Add
+```powershell
+dotnet ef migrations add Initial --startup-project ..\WebApi\WebApi.csproj 
+```
+rodar esse comando dentro da pasta data na camada de infra
+
+Update
+```powershell
+
+dotnet ef database update --startup-project ..\WebApi\WebApi.csproj 
+```

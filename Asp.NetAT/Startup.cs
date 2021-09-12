@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Data.Data;
-using Crosscutting.IoC;
+using Asp.NetAT.Services.Implementations;
+using Asp.NetAT.Services;
 
 namespace Asp.NetAT
 {
@@ -41,7 +41,9 @@ namespace Asp.NetAT
                 */
             });
 
-            services.RegisterServices(Configuration);
+            //services.RegisterServices(Configuration);
+            services.AddTransient<IBandaHttpService, BandaHttpService>();
+            services.AddTransient<IMusicoHttpService, MusicoHttpService>();
 
         }
 
