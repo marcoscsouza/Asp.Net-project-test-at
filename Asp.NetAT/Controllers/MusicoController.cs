@@ -79,7 +79,7 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(/*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoViewModel musicoViewModel)
+        public async Task<IActionResult> Create( MusicoViewModel musicoViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -119,7 +119,7 @@ namespace Asp.NetAT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nome,SobreNome,Nascimento,BandaId")]*/ MusicoViewModel musicoViewModel)
+        public async Task<IActionResult> Edit(int id, MusicoViewModel musicoViewModel)
         {
             if (id != musicoViewModel.Id)
             {

@@ -2,35 +2,72 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Asp.NetAT.Services.Implementations
 {
     public class MusicoHttpService : IMusicoHttpService
     {
-        public Task<IEnumerable<MusicoViewModel>> GetAllAsync(bool orderAscendat, string search = null)
+        private readonly HttpClient _httpClient;
+        private static JsonSerializerOptions _jsonSerializerOptions = new()  //JsonSerializerOptions
         {
-            throw new NotImplementedException();
+            IgnoreNullValues = true,
+            PropertyNameCaseInsensitive = true
+        };
+        public MusicoHttpService()
+        {
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:44312");
+        }
+        public async Task<IEnumerable<MusicoViewModel>> GetAllAsync(bool orderAscendat, string search = null)
+        {
+            var musicos = await _httpClient
+                .GetFromJsonAsync<IEnumerable<MusicoViewModel>>("/api/v1/MusicoApi");
+
+            return musicos;
         }
 
-        public Task<MusicoViewModel> GetByIdAsync(int id)
+        public async Task<MusicoViewModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var musico = await _httpClient
+                .GetFromJsonAsync<MusicoViewModel>($"/api/v1/MusicoApi/{id}");
+
+            return musico;
         }
 
-        public Task<MusicoViewModel> CreateAsync(MusicoViewModel musicoViewModel)
+        public async Task<MusicoViewModel> CreateAsync(MusicoViewModel musicoViewModel)
         {
-            throw new NotImplementedException();
+            var httpReponseMessage = await _httpClient
+                .PostAsJsonAsync("/api/v1/MusicoApi/", musicoViewModel);
+            httpReponseMessage.EnsureSuccessStatusCode();
+            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+
+            var criarMusico = await JsonSerializer.DeserializeAsync<MusicoViewModel>(contentStream, _jsonSerializerOptions);
+
+            return criarMusico;
         }
 
-        public Task<MusicoViewModel> EditAsync(MusicoViewModel musicoViewModel)
+        public async Task<MusicoViewModel> EditAsync(MusicoViewModel musicoViewModel)
         {
-            throw new NotImplementedException();
+            var httpReponseMessage = await _httpClient
+                .PutAsJsonAsync($"/api/v1/MusicoApi/{musicoViewModel.Id}", musicoViewModel);
+            httpReponseMessage.EnsureSuccessStatusCode();
+            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+
+            var editarMusico = await JsonSerializer.DeserializeAsync<MusicoViewModel>(contentStream, _jsonSerializerOptions);
+
+            return editarMusico;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var httpReponseMessage = await _httpClient
+                .DeleteAsync($"/api/v1/MusicoApi/{id}");
+
+            httpReponseMessage.EnsureSuccessStatusCode();
         }
     }
 }
