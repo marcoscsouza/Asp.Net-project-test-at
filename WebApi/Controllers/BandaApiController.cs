@@ -73,13 +73,14 @@ namespace WebApi.Controllers
 
             try
             {
-                await _bandaService.EditAsync(bandaModel);
+                var editarBanda = await _bandaService.EditAsync(bandaModel);
+                return Ok(editarBanda);
             }
             catch (DbUpdateConcurrencyException)
             {
                 return StatusCode(409);
             }
-            return Ok();
+            
         }
 
         [HttpDelete("{id}")]
@@ -93,6 +94,14 @@ namespace WebApi.Controllers
             await _bandaService.DeleteAsync(id);
 
             return Ok();
+        }
+
+        [HttpGet("IsNomeValid/{nome}/{id}")]
+        public async Task<IActionResult> IsNomeValid(string nome, int id)
+        {
+            var isValid = await _bandaService.IsNomeValidAsync(nome, id);
+
+            return Ok(isValid);
         }
     }
 }

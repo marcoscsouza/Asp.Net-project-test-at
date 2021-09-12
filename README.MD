@@ -1,14 +1,14 @@
-# Migrations
-1∞ Commit e suas etapas
- criar uma soluÁ„o
+Ôªø# Migrations
+1¬∞ Commit e suas etapas
+ criar uma solu√ß√£o
  criar as solutions folders
  criar o project MVC e as CLASS LIBRARY dentro das solutions folders (DDD)
  Fazer referencias aos projetos
  criar os modelos dentro de Domain.Model para as entidades
  criar os controllers para gerar com view usando entity
- fazer a migraÁ„o do Context para a pasta Data dentro do projeto Data
+ fazer a migra√ß√£o do Context para a pasta Data dentro do projeto Data
 
-## AtenÁ„o! rodar esses comandos dentro do projeto Data
+## Aten√ß√£o! rodar esses comandos dentro do projeto Data
 Add
 ```powershell
 dotnet ef migrations add Initial --startup-project ..\Asp.NetAT\Asp.NetAT.csproj 
@@ -20,32 +20,32 @@ Update
 
 dotnet ef database update --startup-project ..\Asp.NetAT\Asp.NetAT.csproj 
 ```
-1∞ Commit - CriaÁ„o do projeto e seus modelos
-	Feito o b·sico para o funcionamento das duas Models e seus controllers gerados com view usando entity
-	e depois feita a migraÁ„o do Context para a pasta Data dentro do projeto Data 
+1¬∞ Commit - Cria√ß√£o do projeto e seus modelos
+	Feito o b√°sico para o funcionamento das duas Models e seus controllers gerados com view usando entity
+	e depois feita a migra√ß√£o do Context para a pasta Data dentro do projeto Data 
 	e por ultimo feita a migrations add e update.
 
-ideia inicial do 2∫ commit
-	Como È o acesso quando criado:
+ideia inicial do 2¬∫ commit
+	Como √© o acesso quando criado:
 		A controller acessar diretamente o Context e faz os comandos
 	Como tem que ficar:
-		A controller vai acessar o Service, que vai acessar o Repository, que sÛ ent„o vai fazer as operaÁıes no Context.
+		A controller vai acessar o Service, que vai acessar o Repository, que s√≥ ent√£o vai fazer as opera√ß√µes no Context.
 		(sempre abstraindo por meio das Interfaces)
 
-2∞ Commit - migraÁ„o para o modelo e infra para o DDD
+2¬∞ Commit - migra√ß√£o para o modelo e infra para o DDD
 	Criar as interfaces dentro do Domain.Model para repository e service dos models. ex: IBandaRepository e IServiceRepository
-	criar as classes de Service no projeto Domain.Service e Repository no projeto Data com suas implementaÁıes
-	fazer as modificaÁıes no controller onde acessava o context diretamente agora vai acessar o service
-	dentro de Crosscutting.IoC tem que criar a injeÁ„o de dependencia para funcionar e add o seu metodo dentro da startup.cs 
+	criar as classes de Service no projeto Domain.Service e Repository no projeto Data com suas implementa√ß√µes
+	fazer as modifica√ß√µes no controller onde acessava o context diretamente agora vai acessar o service
+	dentro de Crosscutting.IoC tem que criar a inje√ß√£o de dependencia para funcionar e add o seu metodo dentro da startup.cs 
 	e tirar a stringConnect da startup para bootstrapper
 	mudar as view de musico onde estiver ViewBag.bandaId para Bandas ou de id para nome.
 
-3∞ Commit - implementar o Search e OrderAscendant
+3¬∞ Commit - implementar o Search e OrderAscendant
 	Criar as IndexViewModels dentro do presentation para fazer a search e orderAscendant
 	mudar o metodo de Index dentro de controller para receber IndexViewModels
 	Mudar a view Index de Banda e Musico para receberem seus IndexViewModel.cs
 
-4∞ Commit - MigraÁ„o dos Models para ViewModels
+4¬∞ Commit - Migra√ß√£o dos Models para ViewModels
 	Criar as ViewModel para as duas entidades dentro de presentation
 	Atentar para propety que herda o model para herdar agora o ViewModel nas duas entidades
 	Atentar para a referencia ciclica que pode ocasionar em erros no arquivo Json
@@ -55,25 +55,25 @@ ideia inicial do 2∫ commit
 			Usado no GET: para pegar o model que fica salvo no banco
 		metodo ToModel() : sempre recebe a variravel, ele pega a viewModel e converte em model
 			Usado no POST: para pegar a viewModel que o usuario transformou e salvar no banco novamente como Model
-	Fazer as mudanÁas em todas as views menos no Index que tem seu proprio
-	Modificar o controller para fazer as converÁıes dos Models usando From e dos ViewModels usando ToModel()
+	Fazer as mudan√ßas em todas as views menos no Index que tem seu proprio
+	Modificar o controller para fazer as conver√ß√µes dos Models usando From e dos ViewModels usando ToModel()
 
-5∞ Commit - ValidaÁıes b·sicas e Remote
-	ValidaÁıes basicas basta alterar coloca-las no viewModel que j· ser· usadas
+5¬∞ Commit - Valida√ß√µes b√°sicas e Remote
+	Valida√ß√µes basicas basta alterar coloca-las no viewModel que j√° ser√° usadas
 	Remote
-		usara uma action para servir de metodo e ser· direcionada na controller da banda
-		o AdditionalFields serve para comparar pelo Id e evitar erros de comparaÁ„o
-		remote acessa diretamente o banco ent„o precisa ser feita a ponte
+		usara uma action para servir de metodo e ser√° direcionada na controller da banda
+		o AdditionalFields serve para comparar pelo Id e evitar erros de compara√ß√£o
+		remote acessa diretamente o banco ent√£o precisa ser feita a ponte
 			o ViewModel => Controller => IService(Service) => IRepository(Repository) => Context
 
-### Assim conclui o necessario para o TP1 (Vai atÈ a aula 6)
+### Assim conclui o necessario para o TP1 (Vai at√© a aula 6)
 
 aulas 7 e 8 sobre identity
 
-6∞ Commit  - Identity
-	Fazer um scaffolding padr„o de identity na camada de presentation sÛ do login por enquanto...
+6¬∞ Commit  - Identity
+	Fazer um scaffolding padr√£o de identity na camada de presentation s√≥ do login por enquanto...
 		as paginas que escolhemos gerar servem para personalizar as paginas
-	fazer as adaptaÁıes nos codigos para funcionar o identity
+	fazer as adapta√ß√µes nos codigos para funcionar o identity
 	Fazer o migrations para ter acesso a um banco de dados
 
 	
@@ -86,11 +86,11 @@ Update
 ```powershell
 dotnet ef database update --context IdentityContext
 ```
-obs: n„o foi declarado o startup-project nem o project por teste mesmo, ocorreu alguns erros dificeis de identificar
+obs: n√£o foi declarado o startup-project nem o project por teste mesmo, ocorreu alguns erros dificeis de identificar
 
 ## Assim conclui o necessario para o TP2 (aulas 7 e 8) bastava incluir o identity
 
-7∞ Commit -	User secrets e Login pelo GOOGLE
+7¬∞ Commit -	User secrets e Login pelo GOOGLE
 	seguir o passo a passo dessa doc: https://www.notion.so/Aula-07-e-08-9d9ed3566c874057aee8c646a5ddf230#f120519f85464d448e3e1b832cfc29b3
 	My Client-Id
 		33517397278-h4kfl9q21ep434kko39llprl7aci0g41.apps.googleusercontent.com
@@ -108,24 +108,30 @@ obs: n„o foi declarado o startup-project nem o project por teste mesmo, ocorreu 
 	definidos os secrets agora neste pc esta habilitado para usar
 	modificar a startup.cs para aceitar elas
 
-8∞ Commit - comeÁando o desacoplamento da aula 10
+8¬∞ Commit - come√ßando o desacoplamento da aula 10
 	removida as referencias do MVC
-	removido as converÁıes de ToModel e From
-	IndexViewModel recebendo diretamente o ViewModel e n„o mais Model
-	criado os Services e suas implementaÁıes e coloca-las nas controllers para substituir todos os metodos feitos antes 
+	removido as conver√ß√µes de ToModel e From
+	IndexViewModel recebendo diretamente o ViewModel e n√£o mais Model
+	criado os Services e suas implementa√ß√µes e coloca-las nas controllers para substituir todos os metodos feitos antes 
 	corrigir a dependencia do startup
-	dica: a ideia principal ate o momento È fazer o MVC funcionar sem usar as outras camadas com o fake
+	dica: a ideia principal ate o momento √© fazer o MVC funcionar sem usar as outras camadas com o fake
 	criar a webApi e colocar as referencias que estavam no MVC e as connectionString do appSettings.json
 	consertar os migrations para receberem na webApi
 	Criar as ApiController para servir de endPoints dos controllers do MVC
-	gerar os verbos http para seguir o padr„o restful
+	gerar os verbos http para seguir o padr√£o restful
 	criar os parametros para o apiController
 	basicamente o ApiController vai fazer tudo que o Controller do MVC ja fazia 
-	atÈ a aula 10 a BandaApiController ja funciona porem sem muita ligaÁ„o com o MVC
+	at√© a aula 10 a BandaApiController ja funciona porem sem muita liga√ß√£o com o MVC
 
+## GRANDE DICA
+#### a comunica√ß√£o entre WebApi e o presentation(MVC) se d√° por string num jogo de descerializar de um lado e serealizar de outro,
+#### Cada lado precisa de um modelo para saber onde cada informa√ß√£o ta indo, por exemplo Nome dos dois lados para quando chegar no outro lado(WebApi) saber que √© um nome
+ Browser(View onde o usuario preenche o formulario) 
+		=> AutorController(do presentation usando o CRUD b√°sico Index, Details e etc...) 
+			‚áí AutorHttpService (tambem do presentation onde converte o CRUD b√°sico em verbos HTTP GET, POST e etc...) 
+				‚áí AutorApiController (do WebApi onde recebe os verbos HTTP e faz as opera√ß√µes de backEnd que seguiram para as camadas de negocio e persistencia)
 
-
-	Add
+Add
 ```powershell
 dotnet ef migrations add Initial --startup-project ..\WebApi\WebApi.csproj 
 ```
@@ -136,3 +142,22 @@ Update
 
 dotnet ef database update --startup-project ..\WebApi\WebApi.csproj 
 ```
+
+9¬∞ Commit - Continua√ß√£o do WebApi
+	criando os metodos no httpService usando os verbos http
+	primeiro foi criada o GetAll e corrigida a problematica de loop na serializa√ß√£o 
+		esse problema foi resolvido com a biblioteca do newtonsoft dentro de startup
+	fazer o GetById √© muito parecido com GetAll, vai passar o id na rota e n√£o sera mais cole√ß√£o
+	malandragem! colocar o httpClient no construtor para n√£o repetir c√≥digo
+	fazer o Create utilizando o verbo POST, ele precisa ser processado seguindo uma formula de bolo...
+		dica tbm de iniciar o serializador como uma variavel estatica de campo
+		create s√≥ funcionou depois que coloquei a valida√ß√£o remote para funcionar add ela no apicontroller
+	edit √© parecido com create, mas deu error 405 pq tem que mandar o id na rota tbm escolher mudar a assinatura
+		tem que serializar do outro lado(ApiController) por causa do vai e volta
+	Delete n√£o tem forma nova de fazer com JsonAsync, e add o ensureSuccessStatusCode para evitar problemas 
+		getFrom j√° faz isso
+	A valida√ß√£o do tipo remote recebe um GET diferente 
+	basta replicar tudo para a outra entidade(musico)
+	Faltando agora terminar o index para retornar valores para o search e order ascendant
+
+10¬∞ Commit - 

@@ -15,6 +15,7 @@ namespace Asp.NetAT.Services
         Task<BandaViewModel> CreateAsync(BandaViewModel bandaViewModel);
         Task<BandaViewModel> EditAsync(BandaViewModel bandaViewModel);
         Task DeleteAsync(int id);
+
         Task<bool> IsNomeValidAsync(string nome, int id);
     }
 }

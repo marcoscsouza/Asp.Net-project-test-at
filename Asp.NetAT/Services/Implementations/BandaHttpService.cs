@@ -2,40 +2,80 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Asp.NetAT.Services.Implementations
 {
     public class BandaHttpService : IBandaHttpService
     {
-        public Task<IEnumerable<BandaViewModel>> GetAllAsync(bool orderAscendat, string search = null)
+        private readonly HttpClient _httpClient;
+        private static JsonSerializerOptions _jsonSerializerOptions = new()  //JsonSerializerOptions
         {
-            throw new NotImplementedException();
+            IgnoreNullValues = true,
+            PropertyNameCaseInsensitive = true
+        };
+        public BandaHttpService()
+        {
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:44312");
+        }
+        public async Task<IEnumerable<BandaViewModel>> GetAllAsync(bool orderAscendat, string search = null)
+        {
+            var bandas = await _httpClient
+                .GetFromJsonAsync<IEnumerable<BandaViewModel>>("/api/v1/BandaApi");
+
+            return bandas;
+        }
+         
+        public async Task<BandaViewModel> GetByIdAsync(int id)
+        {
+            var banda = await _httpClient
+                .GetFromJsonAsync<BandaViewModel>($"/api/v1/BandaApi/{id}");
+
+            return banda;
         }
 
-        public Task<BandaViewModel> GetByIdAsync(int id)
+        public async Task<BandaViewModel> CreateAsync(BandaViewModel bandaViewModel)
         {
-            throw new NotImplementedException();
+            var httpReponseMessage = await _httpClient
+                .PostAsJsonAsync("/api/v1/BandaApi/", bandaViewModel);
+            httpReponseMessage.EnsureSuccessStatusCode();
+            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+
+            var criarBanda = await JsonSerializer.DeserializeAsync<BandaViewModel>(contentStream, _jsonSerializerOptions);
+
+            return criarBanda;
         }
 
-        public Task<BandaViewModel> CreateAsync(BandaViewModel bandaViewModel)
+        public async Task<BandaViewModel> EditAsync(BandaViewModel bandaViewModel)
         {
-            throw new NotImplementedException();
+            var httpReponseMessage = await _httpClient
+                .PutAsJsonAsync($"/api/v1/BandaApi/{bandaViewModel.Id}", bandaViewModel);
+            httpReponseMessage.EnsureSuccessStatusCode();
+            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+
+            var editarBanda = await JsonSerializer.DeserializeAsync<BandaViewModel>(contentStream, _jsonSerializerOptions);
+
+            return editarBanda;
         }
 
-        public Task<BandaViewModel> EditAsync(BandaViewModel bandaViewModel)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var httpReponseMessage = await _httpClient
+                .DeleteAsync($"/api/v1/BandaApi/{id}");
+
+            httpReponseMessage.EnsureSuccessStatusCode(); 
         }
 
-        public Task DeleteAsync(int id)
+        public async Task<bool> IsNomeValidAsync(string nome, int id)
         {
-            throw new NotImplementedException();
-        }
+            var isNomeValid = await _httpClient
+                .GetFromJsonAsync<bool>($"/api/v1/BandaApi/IsNomeValid/{nome}/{id}");
 
-        public Task<bool> IsNomeValidAsync(string nome, int id)
-        {
-            throw new NotImplementedException();
+            return isNomeValid;
         }
     }
 }
