@@ -20,15 +20,17 @@ namespace WebApi.Controllers
             _bandaService = bandaService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<BandaModel>>> Get() /* ajustar parametros de filtro */
+        [HttpGet("{orderAscendat:bool}/{search?}")]
+        public async Task<ActionResult<IEnumerable<BandaModel>>> Get(
+            bool orderAscendat, 
+            string search = null) /* ajustar parametros de filtro */
         {
-            var bandas = await _bandaService.GetAllAsync(orderAscendat: true);
+            var bandas = await _bandaService.GetAllAsync(orderAscendat, search);
 
             return Ok(bandas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<BandaModel>> Get(int id)
         {
             if (id <= 0)
@@ -58,7 +60,7 @@ namespace WebApi.Controllers
             return Ok(criarBanda);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<BandaModel>> Put(int id, [FromBody] BandaModel bandaModel)
         {
             if (id != bandaModel.Id)
@@ -83,7 +85,7 @@ namespace WebApi.Controllers
             
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             if (id <= 0)

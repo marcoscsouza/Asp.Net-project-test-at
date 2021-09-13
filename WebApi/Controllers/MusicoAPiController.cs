@@ -21,15 +21,17 @@ namespace WebApi.Controllers
             _musicoService = musicoService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MusicoModel>>> Get() /* ajustar parametros de filtro */
+        [HttpGet("{orderAscendat:bool}/{search?}")]
+        public async Task<ActionResult<IEnumerable<MusicoModel>>> Get(
+            bool orderAscendat,
+            string search = null) /* ajustar parametros de filtro */
         {
-            var musicos = await _musicoService.GetAllAsync(orderAscendat: true);
+            var musicos = await _musicoService.GetAllAsync(orderAscendat, search);
 
             return Ok(musicos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<MusicoModel>> Get(int id)
         {
             if (id <= 0)
@@ -59,7 +61,7 @@ namespace WebApi.Controllers
             return Ok(criarMusico);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<MusicoModel>> Put(int id, [FromBody] MusicoModel musicoModel)
         {
             if (id != musicoModel.Id)
@@ -84,7 +86,7 @@ namespace WebApi.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             if (id <= 0)

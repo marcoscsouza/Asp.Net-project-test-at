@@ -52,10 +52,13 @@ namespace Data.Repositories
 
             if (string.IsNullOrWhiteSpace(search))
             {
-                return await _aspNetATContext.MusicoModel.ToListAsync();
+                return await _aspNetATContext.MusicoModel
+                    .Include(x => x.Banda)
+                    .ToListAsync();
             }
 
             return await musicos
+                .Include(x => x.Banda)
                 .Where(x => x.Nome.Contains(search))
                 .ToListAsync();
 

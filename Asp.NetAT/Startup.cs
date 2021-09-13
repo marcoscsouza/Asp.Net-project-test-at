@@ -42,8 +42,16 @@ namespace Asp.NetAT
             });
 
             //services.RegisterServices(Configuration);
-            services.AddTransient<IBandaHttpService, BandaHttpService>();
-            services.AddTransient<IMusicoHttpService, MusicoHttpService>();
+            //services.AddTransient<IBandaHttpService, BandaHttpService>();
+            //services.AddTransient<IMusicoHttpService, MusicoHttpService>();
+
+            var bandaAddress = Configuration.GetValue<string>("ApiAddresses:Banda");
+            var MusicoAddress = Configuration.GetValue<string>("ApiAddresses:Musico");
+
+            services.AddHttpClient<IBandaHttpService, BandaHttpService>(x =>
+                x.BaseAddress = new Uri(bandaAddress));
+            services.AddHttpClient<IMusicoHttpService, MusicoHttpService>(x =>
+                x.BaseAddress = new Uri(MusicoAddress));
 
         }
 

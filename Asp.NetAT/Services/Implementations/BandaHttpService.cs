@@ -17,15 +17,14 @@ namespace Asp.NetAT.Services.Implementations
             IgnoreNullValues = true,
             PropertyNameCaseInsensitive = true
         };
-        public BandaHttpService()
+        public BandaHttpService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:44312");
+            _httpClient = httpClient;
         }
         public async Task<IEnumerable<BandaViewModel>> GetAllAsync(bool orderAscendat, string search = null)
         {
             var bandas = await _httpClient
-                .GetFromJsonAsync<IEnumerable<BandaViewModel>>("/api/v1/BandaApi");
+                .GetFromJsonAsync<IEnumerable<BandaViewModel>>($"{orderAscendat}/{search}");
 
             return bandas;
         }
@@ -33,7 +32,7 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<BandaViewModel> GetByIdAsync(int id)
         {
             var banda = await _httpClient
-                .GetFromJsonAsync<BandaViewModel>($"/api/v1/BandaApi/{id}");
+                .GetFromJsonAsync<BandaViewModel>($"{id}");
 
             return banda;
         }
@@ -41,9 +40,9 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<BandaViewModel> CreateAsync(BandaViewModel bandaViewModel)
         {
             var httpReponseMessage = await _httpClient
-                .PostAsJsonAsync("/api/v1/BandaApi/", bandaViewModel);
+                .PostAsJsonAsync("", bandaViewModel);
             httpReponseMessage.EnsureSuccessStatusCode();
-            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+            await using var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
 
             var criarBanda = await JsonSerializer.DeserializeAsync<BandaViewModel>(contentStream, _jsonSerializerOptions);
 
@@ -53,9 +52,9 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<BandaViewModel> EditAsync(BandaViewModel bandaViewModel)
         {
             var httpReponseMessage = await _httpClient
-                .PutAsJsonAsync($"/api/v1/BandaApi/{bandaViewModel.Id}", bandaViewModel);
+                .PutAsJsonAsync($"{bandaViewModel.Id}", bandaViewModel);
             httpReponseMessage.EnsureSuccessStatusCode();
-            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+            await using var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
 
             var editarBanda = await JsonSerializer.DeserializeAsync<BandaViewModel>(contentStream, _jsonSerializerOptions);
 
@@ -65,7 +64,7 @@ namespace Asp.NetAT.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var httpReponseMessage = await _httpClient
-                .DeleteAsync($"/api/v1/BandaApi/{id}");
+                .DeleteAsync($"{id}");
 
             httpReponseMessage.EnsureSuccessStatusCode(); 
         }
@@ -73,7 +72,7 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<bool> IsNomeValidAsync(string nome, int id)
         {
             var isNomeValid = await _httpClient
-                .GetFromJsonAsync<bool>($"/api/v1/BandaApi/IsNomeValid/{nome}/{id}");
+                .GetFromJsonAsync<bool>($"IsNomeValid/{nome}/{id}");
 
             return isNomeValid;
         }

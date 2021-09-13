@@ -17,15 +17,14 @@ namespace Asp.NetAT.Services.Implementations
             IgnoreNullValues = true,
             PropertyNameCaseInsensitive = true
         };
-        public MusicoHttpService()
+        public MusicoHttpService(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:44312");
+            _httpClient = httpClient;
         }
         public async Task<IEnumerable<MusicoViewModel>> GetAllAsync(bool orderAscendat, string search = null)
         {
             var musicos = await _httpClient
-                .GetFromJsonAsync<IEnumerable<MusicoViewModel>>("/api/v1/MusicoApi");
+                .GetFromJsonAsync<IEnumerable<MusicoViewModel>>($"{orderAscendat}/{search}");
 
             return musicos;
         }
@@ -33,7 +32,7 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<MusicoViewModel> GetByIdAsync(int id)
         {
             var musico = await _httpClient
-                .GetFromJsonAsync<MusicoViewModel>($"/api/v1/MusicoApi/{id}");
+                .GetFromJsonAsync<MusicoViewModel>($"{id}");
 
             return musico;
         }
@@ -41,9 +40,9 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<MusicoViewModel> CreateAsync(MusicoViewModel musicoViewModel)
         {
             var httpReponseMessage = await _httpClient
-                .PostAsJsonAsync("/api/v1/MusicoApi/", musicoViewModel);
+                .PostAsJsonAsync("", musicoViewModel);
             httpReponseMessage.EnsureSuccessStatusCode();
-            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+            await using var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
 
             var criarMusico = await JsonSerializer.DeserializeAsync<MusicoViewModel>(contentStream, _jsonSerializerOptions);
 
@@ -53,9 +52,10 @@ namespace Asp.NetAT.Services.Implementations
         public async Task<MusicoViewModel> EditAsync(MusicoViewModel musicoViewModel)
         {
             var httpReponseMessage = await _httpClient
-                .PutAsJsonAsync($"/api/v1/MusicoApi/{musicoViewModel.Id}", musicoViewModel);
+                .PutAsJsonAsync($"{musicoViewModel.Id}", musicoViewModel);
             httpReponseMessage.EnsureSuccessStatusCode();
-            var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
+
+            await using var contentStream = await httpReponseMessage.Content.ReadAsStreamAsync();
 
             var editarMusico = await JsonSerializer.DeserializeAsync<MusicoViewModel>(contentStream, _jsonSerializerOptions);
 
@@ -65,7 +65,7 @@ namespace Asp.NetAT.Services.Implementations
         public async Task DeleteAsync(int id)
         {
             var httpReponseMessage = await _httpClient
-                .DeleteAsync($"/api/v1/MusicoApi/{id}");
+                .DeleteAsync($"{id}");
 
             httpReponseMessage.EnsureSuccessStatusCode();
         }

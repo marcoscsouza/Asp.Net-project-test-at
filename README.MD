@@ -160,4 +160,17 @@ dotnet ef database update --startup-project ..\WebApi\WebApi.csproj
 	basta replicar tudo para a outra entidade(musico)
 	Faltando agora terminar o index para retornar valores para o search e order ascendant
 
-10° Commit - 
+10° Commit - melhorias
+	passando o using no contentStream para melhorar perfomace
+	Passar um unico endereço direto pelo baseAdress
+	consertando index de musico para retornar a banda, tem que mexer no musicoRepository para receber o include de banda
+	injetar o httpClient no startup do web mvc e colocar o base address direto nela, assim podemos tirar a injeção de dependencia antiga
+		com essa modificação podemos modificar o ctor dos httpService
+		passando o BaseAddress para o AppSettings.json para manter uma organização melhor e menos presa do endereço
+	passar a ordenãção e a busca como dois parametros de rota e de metodo
+		tomar cuidado com o search voltando null (SOLUÇÃO colocar interrogação no search e passar o tipo da ordenação)
+
+	sdasd
+
+
+	m
